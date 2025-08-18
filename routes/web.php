@@ -134,3 +134,7 @@ Route::post('google/logout', [GoogleAuthController::class,'logout']);
 
 Route::get('/upload', [UploadFileController::class, 'showUploadForm'])->name('upload.form');
 Route::post('/upload', [UploadFileController::class, 'uploadFile'])->name('upload.file');
+
+Route::get('/detail',function(){
+    return view('detail');
+} )->name('detail');

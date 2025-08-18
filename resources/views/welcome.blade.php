@@ -173,7 +173,7 @@
 										</div>
 										<div class="upcoming-description">
 										<p>{{ $book->description }}.....</p>
-										<a href="catalog1.html" class="upcoming-read-more">Read More</a>
+										<a href="{{ route('detail') }}" class="upcoming-read-more">Read More</a>
 										</div>
 									</div>
 								</div>
