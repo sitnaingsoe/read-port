@@ -31,6 +31,7 @@ class BookController extends Controller
                     'description'=> 'required',
                     'category'=> 'required',
                         ]);
+
                     $incomingFiled['name'] = strip_tags($incomingFiled['name']);
                     $incomingFiled['price'] = strip_tags($incomingFiled['price']);
                     $incomingFiled['description'] = strip_tags($incomingFiled['description']);
@@ -40,6 +41,7 @@ class BookController extends Controller
                     return redirect('/book-list');
     }
     public function createBook (Request $request){
+
         $incomingBook = $request->validate([
             "name"=>"required",
             "price" => "required",
@@ -49,8 +51,7 @@ class BookController extends Controller
             'file' => 'required|file|max:2048',
             'category_id' => 'required',
             'booktype'=>'required'
-        ]);
-        
+        ]);     
             if ($request->hasFile('book_cover')) {
             // Store the file
             $path = $request->file('book_cover')->storePublicly('uploads', 'spaces');

@@ -43,7 +43,12 @@ if (!function_exists('adminRoute')) {
 
 
 Route::get('/', function () {
-    return view('welcome'); 
+    $books = Book::all();
+    $categories = Category::all();
+    return view('welcome',[
+        'books'=> $books,
+        'categories'=> $categories
+    ]); 
 })->name('home');
 Route::get('/user/profile', function () {
     return view('user.profile');
