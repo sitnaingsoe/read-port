@@ -100,14 +100,13 @@
                 </li>
 
                 <li>
-                    <a href="#">
-                        <i class="fa fa-th-large"></i> Book Manager
-                        <i class="fa arrow"></i>
+                    <a href="{{ url('book-list') }}">
+                        <i class="fa fa-th-large"></i> Books List
+                        
                     </a>
-                    <ul class="collapse">
-                        <li><a href="{{ url('book-list') }}"> Books List </a></li>
-                        <li><a href="{{ url('book-create') }}"> Create Book </a></li>
-                    </ul>
+                </li>
+                <li>
+                    <a href="{{ url('book-create') }}"><i class="fa-solid fa-circle-plus"></i> Create Book </a>
                 </li>
 
                 <li>
