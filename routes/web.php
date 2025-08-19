@@ -12,6 +12,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PremiumController;
 // Route only for admin
+use App\Http\Controllers\ProfileController;
 use Laravel\Socialite\Two\AbstractProvider;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -145,10 +146,8 @@ Route::get('/detail',function(){
 Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 
 // Store review
-Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');;
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
 
-
-
-Route::get('/review-form',function(){
-    return view('review');
-})->middleware('auth');
+Route::get('/profile', [ProfileController::class, 'show'])
+    ->middleware('auth')
+    ->name('profile.show');

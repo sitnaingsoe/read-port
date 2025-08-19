@@ -1,16 +1,11 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>{{ $user->name }}'s Profile</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    @include('component.user-head')
+     <style>
     .container {
       max-width: 1000px;
       margin: auto;
@@ -21,6 +16,7 @@
       background: #fff;
       padding: 20px;
       border-radius: 10px;
+      margin-top: 110px;
       margin-bottom: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
@@ -85,100 +81,64 @@
     }
   </style>
 </head>
-<body>
-  <div class="container">
+<body class="body">
+    @include('component.user-header')
+    @auth
+    <div class="container">
 
-    {{-- Profile Header --}}
-    <div class="profile-header">
-      <div class="avatar">
-        <img src="{{ $user->avatar_url ?? 'https://via.placeholder.com/100' }}" alt="User Avatar">
-      </div>
-      <div class="profile-info">
-        <h1>{{ $user->name }}</h1>
-        <p>Email: {{ $user->email }}</p>
-        <p>Member since: {{ $user->created_at->format('M d, Y') }}</p>
-      </div>
+  {{-- Profile Header --}}
+  <div class="profile-header">
+    <div class="avatar">
+      <img src="{{ auth()->user()->avatar?? 'https://via.placeholder.com/100' }}" alt="User Avatar">
     </div>
-
-    {{-- Saved Books --}}
-    <section>
-      <h2>📚 Saved Books</h2>
-      <div class="book-list">
-        @forelse($user->savedBooks as $book)
-          <div class="book-card">
-            <a href="{{ route('books.show', $book->id) }}">
-              <img src="{{ $book->cover_url ?? 'https://via.placeholder.com/200x280' }}" alt="Book cover">
-            </a>
-            <h3>{{ $book->title }}</h3>
-            <p>{{ Str::limit($book->description, 80) }}</p>
-          </div>
-        @empty
-          <p>No saved books yet.</p>
-        @endforelse
-      </div>
-    </section>
-
-    {{-- User Reviews --}}
-    <section>
-      <h2>✍️ My Reviews</h2>
-      <div class="review-list">
-        @forelse($user->reviews as $review)
-          <div class="review-card">
-            <h4>{{ $review->book->title }}</h4>
-            <div class="stars">
-              @for ($i = 1; $i <= 5; $i++)
-                <span>{{ $i <= $review->rating ? '★' : '☆' }}</span>
-              @endfor
-            </div>
-            <p>{{ $review->comment }}</p>
-            <small>Reviewed on {{ $review->created_at->format('M d, Y') }}</small>
-          </div>
-        @empty
-          <p>You haven’t written any reviews yet.</p>
-        @endforelse
-      </div>
-    </section>
-
+    <div class="profile-info">
+      <h1>{{ auth()->user()->name }}</h1>
+      <p>Email: {{ auth()->user()->email }}</p>
+      <p>Member since: {{ auth()->user()->created_at->format('M d, Y') }}</p>
+    </div>
   </div>
-</body>
-</html>
 
-    <button id="logout-btn">Logout</button>
+  {{-- Saved Books --}}
+  <section>
+    <h2>📚 Saved Books</h2>
+    <div class="book-list">
+      {{--@forelse(auth()->user()->savedBooks as $book)
+        <div class="book-card">
+          <a href="{{ route('books.show', $book->id) }}">
+            <img src="{{ $book->cover_url ?? 'https://via.placeholder.com/200x280' }}" alt="Book cover">
+          </a>
+          <h3>{{ $book->title }}</h3>
+          <p>{{ \Illuminate\Support\Str::limit($book->description, 80) }}</p>
+        </div>
+      @empty
+        <p>No saved books yet.</p>
+      @endforelse--}}
+       <p>No saved books yet.</p>
+    </div>
+  </section>
 
-    <script>
-        // Check token in localStorage
-        const token = localStorage.getItem("auth_token");
-
-        if (!token) {
-            // No token, redirect to login
-            window.location.href = "/login";
-        } else {
-            // Verify token with backend
-            fetch('/api/auth/me', {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-            .then(res => {
-                if (res.status === 200) return res.json();
-                else throw new Error('Invalid token');
-            })
-            .then(user => {
-                document.getElementById('welcome-message').innerText =
-                    `Welcome back, ${user.name}! Your email: ${user.email}`;
-            })
-            .catch(err => {
-                console.error(err);
-                localStorage.removeItem("auth_token");
-                window.location.href = "/login";
-            });
-        }
-
-        // Logout button
-        document.getElementById('logout-btn').addEventListener('click', function() {
-            localStorage.removeItem("auth_token"); // clear token
-            window.location.href = "/logout"; // optional backend logout
-        });
-    </script>
+  {{-- User Reviews --}}
+  <section>
+    <h2>✍️ My Reviews</h2>
+    <div class="review-list">
+      @forelse(auth()->user()->reviews as $review)
+        <div class="review-card">
+          <h4>{{ $review->book->title }}</h4>
+          <div class="stars">
+            @for ($i = 1; $i <= 5; $i++)
+              <span>{{ $i <= $review->rating ? '★' : '☆' }}</span>
+            @endfor
+          </div>
+          <p>{{ $review->comment }}</p>
+          <small>Reviewed on {{ $review->created_at->format('M d, Y') }}</small>
+        </div>
+      @empty
+        <p>You haven’t written any reviews yet.</p>
+      @endforelse
+    </div>
+  </section>
+@else
+    <p>Please <a href="{{ route('login') }}">log in</a> to view your profile.</p>
+@endauth    
 </body>
 </html>
