@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ $book->title }} - Book Details</title>
+  <title>- Book Details</title>
   <style>
     :root {
       --bg: #0b1020;
@@ -91,8 +91,8 @@
         </div>
         <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
           <span class="book-badge">{{ $book->booktype }}</span>
-          <span class="book-badge">Burmese</span>
-          <span class="book-badge">ISBN 978-0525559474</span>
+          <span class="book-badge">Save</span>
+          <span class="book-badge"> <a href="{{ $book->file }}">Read</a></span>
         </div>
       </div>
     </div>
@@ -102,27 +102,26 @@
         <h2 class="book-section-title">Description</h2>
         <div class="book-desc">{{ $book->description }}</div>
 
-        <h2 class="book-section-title" style="margin-top:20px;">Add a Review</h2>
-        <form class="book-form" method="POST" action="{{ route('/review') }}">
-          @csrf
-          <div class="row">
-            <label for="book-name">Your Name</label>
-            <input type="text" id="book-name" name="name" placeholder="Jane Doe" required />
-          </div>
-          <div class="row">
-            <label>Rating</label>
-            <div class="book-rate-input" id="book-rate-input" role="radiogroup"></div>
-            <input type="hidden" name="rating" id="book-rating-value" required />
-          </div>
-          <div class="row">
-            <label for="book-comment">Your Review</label>
-            <textarea id="book-comment" name="comment" placeholder="What did you think?" required></textarea>
-          </div>
-          <div class="book-actions">
-            <button type="reset">Clear</button>
-            <button type="submit" class="primary">Submit Review</button>
-          </div>
-        </form>
+        <h2 class="book-section-title" style="margin-top:20px;">Add a Review</h2>   
+              
+              <form class="book-form" method="POST" action='{{ route('reviews.store') }}'>
+                @csrf
+                <div class="row">
+                    <label>Rating</label>
+                    <div class="book-rate-input" id="book-rate-input" role="radiogroup"></div>
+                    <input type="hidden" name="rating" id="book-rating-value" required />
+                </div>
+                <input type="hidden" name="book_id" value="{{ $book->id }}">
+                <div class="row">
+                  <label for="book-comment">Your Review</label>
+                  <textarea id="book-comment" name="comment" placeholder="What did you think?" required></textarea>
+                 </div>
+                  <div class="book-actions">
+                  <button type="reset">Clear</button>
+                  <button class="primary">Submit Review</button>
+              </div>
+            </form>
+
       </section>
 
       <aside>

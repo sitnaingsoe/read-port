@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PremiumController;
-use Laravel\Socialite\Two\AbstractProvider;
 // Route only for admin
+use Laravel\Socialite\Two\AbstractProvider;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GoogleAuthController;
@@ -140,6 +141,14 @@ Route::get('/detail',function(){
 } )->name('detail');
 
 
-Route::get('/books/{id}', [BookController::class, 'show'])->name('show');
+// Book detail page
+Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 
-Route::post('', [BookController::class,''])->name('');
+// Store review
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');;
+
+
+
+Route::get('/review-form',function(){
+    return view('review');
+})->middleware('auth');

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Premium;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -29,58 +29,76 @@ public function approve(User $user, Premium $premium)
         Auth::logout();
         return redirect("/");
     }
-    public function login(Request $request){
-        $incomingFiled = $request->validate([
-    'loginemail' => ["required", 'email'],
-    'loginpassword' => 'required'
-]);
+   public function login(Request $request)
+{
+    $incomingField = $request->validate([
+        'loginemail'    => ['required', 'email'],
+        'loginpassword' => ['required'],
+    ]);
 
-if (Auth::attempt([
-    'email' => $incomingFiled['loginemail'],
-    'password' => $incomingFiled['loginpassword']
-])) {
+    // Attempt login
+    if (Auth::attempt([
+        'email'    => $incomingField['loginemail'],
+        'password' => $incomingField['loginpassword']
+    ])) {
+        $request->session()->regenerate(true);
 
-    $request->session()->regenerate(true);
+        $user = Auth::user(); // Logged in user
 
-    $user = Auth::user(); // Logged in user
+        // Create token (same as signup)
+        $token = $user->createToken('google-login')->plainTextToken;
 
-    switch ($user->usertype) {
-        case 'admin':
-            return redirect()->route('dashboard');
-        case 'user':
-            return redirect()->route('profile');
-        default:
-            return redirect()->route('home');
-    }
-}
+        // Determine redirect
+        $redirectTo = match ($user->usertype) {
+            'admin' => route('dashboard'),
+            'user'  => route('profile'),
+            default => route('home'),
+        };
 
-// If login fails
-return back()->withErrors([
-    'loginemail' => 'Invalid email or password.',
-]);
-
-    }
-    public function signup(Request $request)
-    {
-        $incomingField = $request->validate([
-            'name'     => 'required',
-            'email'    => ['required', 'email'],
-            'password' => ['required', 'min:6'],
+        // Return same view as signup
+        return view('auth.google-success', [
+            'token'      => $token,
+            'redirectTo' => $redirectTo,
+            'user'       => $user
         ]);
-
-        User::create($incomingField);
-       
-        // Trigger the SweetAlert
-        Alert::success('Success!', 'Your account has been created.');
-         $user = User::create($incomingField);
-
-        // Redirect to home
-             if ($user->usertype === 'admin') {
-                    return redirect()->route('dashboard');
-            } else {
-                    return redirect()->route('profile');
-                }
     }
+
+    // If login fails
+    return back()->withErrors([
+        'loginemail' => 'Invalid email or password.',
+    ]);
+}
+  public function signup(Request $request)
+{
+    // Validate request
+    $incomingField = $request->validate([
+        'name'     => 'required|string|max:255',
+        'email'    => ['required', 'email', 'unique:users,email'],
+        'password' => ['required', 'min:6'],
+    ]);
+
+    // Create the user
+    $user = User::create([
+        'name'     => $incomingField['name'],
+        'email'    => $incomingField['email'],
+        'password' => Hash::make($incomingField['password']), // hash password
+    ]);
+
+    // Create token
+    $token = $user->createToken('google-login')->plainTextToken;
+
+    // Determine redirect route
+    $redirectTo = ($user->usertype === 'admin') 
+        ? route('dashboard') 
+        : route('profile');
+
+    // Return blade view with token + redirect
+    return view('auth.google-success', [
+        'token'      => $token,
+        'redirectTo' => $redirectTo,
+        'user'       => $user
+    ]);
+}
     public function loginView()
     {
         return view('auth.login');
