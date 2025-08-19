@@ -9,6 +9,13 @@ use App\Models\Book;
 use App\Models\Category;
 class BookController extends Controller
 {
+      public function show($id)
+    {
+        $book = Book::with('reviews')->findOrFail($id);
+        $averageRating = $book->reviews->avg('rating');
+
+        return view('show', compact('book', 'averageRating'));
+    }
     public function showBookEditPage(Book $book){
         //if(Auth::user()->id != $book['']){
         //    return redirect("/");

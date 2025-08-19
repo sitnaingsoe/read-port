@@ -138,3 +138,8 @@ Route::post('/upload', [UploadFileController::class, 'uploadFile'])->name('uploa
 Route::get('/detail',function(){
     return view('detail');
 } )->name('detail');
+
+
+Route::get('/books/{id}', [BookController::class, 'show'])->name('show');
+
+Route::post('', [BookController::class,''])->name('');

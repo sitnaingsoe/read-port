@@ -172,8 +172,10 @@
 											<span class="card__rate"><i class="icon ion-ios-star"></i>7.5</span>
 										</div>
 										<div class="upcoming-description">
-										<p>{{ $book->description }}.....</p>
-										<a href="{{ route('detail') }}" class="upcoming-read-more">Read More</a>
+									<p>
+										{{ Str::limit($book->description, 100, '...') }}
+									</p>
+									<a href="{{ route('books.show', $book->id) }}" class="upcoming-read-more">Read More</a>
 										</div>
 									</div>
 								</div>
@@ -199,8 +201,10 @@
 												<span class="card__rate"><i class="icon ion-ios-star"></i>{{ $book->rating }}</span>
 											</div>
 										<div class="upcoming-description">
-										<p>{{ $book->description }}.....</p>
-										<a href="catalog1.html" class="upcoming-read-more">Read More</a>
+										<p>
+										{{ Str::limit($book->description, 100, '...') }}
+									</p>
+									<a href="{{ route('books.show', $book->id) }}" class="upcoming-read-more">Read More</a>
 										</div>
 										</div>
 									</div>
