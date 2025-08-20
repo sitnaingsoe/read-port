@@ -169,7 +169,7 @@
 											<span class="card__category">
 												<a href="#">{{ $book->author }}</a>
 											</span>
-											<span class="card__rate"><i class="icon ion-ios-star"></i>7.5</span>
+											<span class="card__rate"><i class="icon ion-ios-star"></i>{{ number_format($book->reviews->avg('rating'), 1) ?? 'N/A' }}</span>
 										</div>
 										<div class="upcoming-description">
 									<p>

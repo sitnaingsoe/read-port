@@ -106,7 +106,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
 
 Route::get('/login', [UserController::class, 'loginView'])->name('login');
 Route::get('/signup', [UserController::class, 'signupView'])->name('signup');
-Route::post('/logout',[UserController::class,'logout']);
+Route::post('/logout',[UserController::class,'logout'])->name('logout');
 Route::post('/login',[UserController::class,'login']);  
 Route::post('/signup', [UserController::class,'signup']); 
 
@@ -151,3 +151,5 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 Route::get('/profile', [ProfileController::class, 'show'])
     ->middleware('auth')
     ->name('profile.show');
+
+Route::post('/books/{book}/save', [BookController::class, 'saveBook'])->middleware('auth')->name('books.save');

@@ -8,7 +8,17 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Book;
 use App\Models\Category;
 class BookController extends Controller
+{       
+    public function saveBook(Book $book)
 {
+    $user = Auth::user();
+    if ($user->savedBooks->contains($book->id)) {
+        $user->savedBooks()->detach($book->id);
+    } else {
+        $user->savedBooks()->attach($book->id);
+    }
+    return back();
+}
       public function show($id)
     {
         $book = Book::with('reviews')->findOrFail($id);

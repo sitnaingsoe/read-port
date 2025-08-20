@@ -24,5 +24,10 @@ class Book extends Model
     {
         return $this->reviews()->avg('rating');
     }
+        public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'saved_books')
+                    ->withTimestamps();
+    }
   
 }

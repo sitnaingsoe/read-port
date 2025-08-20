@@ -91,7 +91,14 @@
         </div>
         <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
           <span class="book-badge">{{ $book->booktype }}</span>
-          <span class="book-badge">Save</span>
+          <form method="POST" action="{{ route('books.save', $book->id) }}">
+          @csrf
+          @if(auth()->user()->savedBooks->contains($book->id))
+              <button type="submit">Unsave</button>
+          @else
+              <button type="submit">Save</button>
+          @endif
+      </form>
           <span class="book-badge"> <a href="{{ $book->file }}">Read</a></span>
         </div>
       </div>
