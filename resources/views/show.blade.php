@@ -94,12 +94,20 @@
           <form method="POST" action="{{ route('books.save', $book->id) }}">
           @csrf
           @if(auth()->user()->savedBooks->contains($book->id))
-              <button type="submit">Unsave</button>
+              <button type="submit" class="btn btn-primary">Unsave</button>
           @else
-              <button type="submit">Save</button>
+              <button type="submit" class="btn btn-primary">Save</button>
           @endif
       </form>
-          <span class="book-badge"> <a href="{{ $book->file }}">Read</a></span>
+           @if($book->booktype === 'premium')
+            @if(auth()->user()->is_premium)
+                <span class="book-badge"><a href="{{ $book->file }}">Read</a></span>
+            @else
+                <span class="book-badge" style="opacity:0.5; cursor:not-allowed;">Premium only</span>
+            @endif
+        @else
+            <span class="book-badge"><a href="{{ $book->file }}">Read</a></span>
+        @endif
         </div>
       </div>
     </div>

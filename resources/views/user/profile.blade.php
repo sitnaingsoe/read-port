@@ -8,44 +8,59 @@
      <style>
     .container {
       max-width: 1000px;
-      margin: auto;
+      margin-top: auto;
     }
-    .profile-header {
-      display: flex;
-      align-items: center;
-      background: #a1a4ad;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 110px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: #ccc;
-      margin-right: 20px;
-      overflow: hidden;
-    }
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .profile-info h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-    .profile-info p {
-      margin: 5px 0;
-      color: #555;
-    }
-    h2 {
-      margin-top: 30px;
-      font-size: 22px;
-      color: #444;
-    }
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #2c2c3c;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 90px 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4f46e5; /* nice primary border */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.profile-info h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #111827;
+}
+
+.profile-info p {
+  margin: 4px 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.profile-info p:first-of-type {
+  font-weight: 500;
+}
+
+.profile-info a {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.profile-info a:hover {
+  text-decoration: underline;
+}
+
 /* Saved Books as horizontal scroll */
 .book-list {
     display: flex;
@@ -187,11 +202,12 @@
 .upcoming-read-more {
     display: inline-block;
     margin-top: 5px;
-    color: #1db954;
+    color: #3f50c1;
     font-weight: bold;
     text-decoration: none;
 }
   </style>
+    <!-- Favicon -->
 </head>
 <body class="body">
     @include('component.user-header')
@@ -199,14 +215,21 @@
     <div class="container">
 
   {{-- Profile Header --}}
-  <div class="profile-header">
+  <div class="profile-header" style="color: #ffff">
     <div class="avatar">
       <img src="{{ auth()->user()->avatar?? 'https://via.placeholder.com/100' }}" alt="User Avatar">
     </div>
     <div class="profile-info">
-      <h1>{{ auth()->user()->name }}</h1>
-      <p>Email: {{ auth()->user()->email }}</p>
-      <p>Member since: {{ auth()->user()->created_at->format('M d, Y') }}</p>
+      <h1 style="color: #fff">{{ auth()->user()->name }}</h1>
+      <p style="color: #fff">Email: {{ auth()->user()->email }}</p>
+      <p style="color: #fff" >Member since: {{ auth()->user()->created_at->format('M d, Y') }}</p>
+      <p style="color: #fff">Status:
+        @if (auth()->user()->is_premium)
+          <p style="color: #fff">Premium</p>  
+        @else
+          <p style="color: #fff">Free</p> 
+          <a href="{{ route('upgrade-plan') }}">Upgrade your plan</a>         
+        @endif
     </div>
   </div>
 
@@ -273,6 +296,26 @@
 </section>
 @else
     <p>Please <a href="{{ route('login') }}">log in</a> to view your profile.</p>
-@endauth    
+@endauth  
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="/create-category" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Create Category</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="form-control" name="categoryName">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>  
 </body>
 </html>

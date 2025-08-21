@@ -25,91 +25,46 @@
 						</div>
 
 						<div class="col-12">
-							<div class="owl-carousel home__carousel">
+						<div class="owl-carousel home__carousel">
+							@foreach($topBooks as $book)
 								<div class="item">
 									<!-- card -->
 									<div class="card card--big">
 										<div class="card__cover">
-											<img src="https://sgp1.digitaloceanspaces.com/msquarefdc/uploads/8Svxxm1gbOGYt3y3mzc5nMhWYZB9cTQ8VvP2pjm1.webp" alt="">
-											<a href="#" class="card__play">
+											<img src="{{ $book->book_cover ?? asset('img/default-book.png') }}" alt="{{ $book->title }}">
+											<a href="{{ route('books.show', $book->id) }}" class="card__play">
 												<i class="icon ion-ios-play"></i>
 											</a>
 										</div>
 										<div class="card__content">
-											<h3 class="card__title"><a href="#"> <i class="fas fa-crown" style="color:gold;"></i>&nbsp;ခင်ဗျားကို ကျွန်တော်ချစ်တယ်</a></h3>
+											<h3 class="card__title">
+												<a href="{{ route('books.show', $book->id) }}">	@if ($book->booktype == "premium")
+														<i class="fas fa-crown" style="color:gold;"></i>
+													@endif
+													&nbsp;{{ $book->title }}
+												</a>
+											</h3>
 											<span class="card__category">
-												<a href="#">စဝ်ခွန်ဇ</a>
-												
+												<a href="#">{{ $book->author ?? 'Unknown Author' }}</a>
 											</span>
-											<span class="card__rate"><i class="icon ion-ios-star" style="color:orn"></i>8.4</span>
+											<span class="card__rate">
+												<i class="icon ion-ios-star"></i>
+												{{ number_format($book->avg_rating, 1) }}
+											</span>
+											<div class="upcoming-description">
+											<p>
+												{{ Str::limit($book->description, 40, '...') }}
+												</p>
+												<a href="{{ route('books.show', $book->id) }}" class="upcoming-read-more">Read More</a>
+													</div>
 										</div>
 									</div>
 									<!-- end card -->
 								</div>
-
-								<div class="item">
-									<!-- card -->
-									<div class="card card--big">
-										<div class="card__cover">
-											<img src="https://sgp1.digitaloceanspaces.com/msquarefdc/uploads/8Svxxm1gbOGYt3y3mzc5nMhWYZB9cTQ8VvP2pjm1.webp" alt="">
-											<a href="#" class="card__play">
-												<i class="icon ion-ios-play"></i>
-											</a>
-										</div>
-										<div class="card__content">
-											<h3 class="card__title"><a href="#">  <i class="fas fa-crown" style="color:gold;"></i>&nbsp;ရေစက်တိုသည်လည်း တစ်ခါတစ်ရံ မဆုံသည်းသာ</a></h3>
-											<span class="card__category">
-												<a href="#">လမင်းမိုမို</a>
-											</span>
-											<span class="card__rate"><i class="icon ion-ios-star"></i>7.1</span>
-										</div>
-									</div>
-									<!-- end card -->
-								</div>
-
-								<div class="item">
-									<!-- card -->
-									<div class="card card--big">
-										<div class="card__cover">
-											<img src="https://sgp1.digitaloceanspaces.com/msquarefdc/uploads/8Svxxm1gbOGYt3y3mzc5nMhWYZB9cTQ8VvP2pjm1.webp" alt="">
-											<a href="#" class="card__play">
-												<i class="icon ion-ios-play"></i>
-											</a>
-										</div>
-										<div class="card__content">
-											<h3 class="card__title"><a href="#">  <i class="fas fa-crown" style="color:gold;"></i>&nbsp;ဘ၀အတွေးထဲမှဒဿနများ</a></h3>
-											<span class="card__category">
-												<a href="#">အရှင်ဣဒ္ဓိပါလ(ရွှေသန္တာ)</a>
-												
-											</span>
-											<span class="card__rate"><i class="icon ion-ios-star"></i>6.3</span>
-										</div>
-									</div>
-									<!-- end card -->
-								</div>
-
-								<div class="item">
-									<!-- card -->
-									<div class="card card--big">
-										<div class="card__cover">
-											<img src="https://sgp1.digitaloceanspaces.com/msquarefdc/uploads/8Svxxm1gbOGYt3y3mzc5nMhWYZB9cTQ8VvP2pjm1.webp" alt="">
-											<a href="#" class="card__play">
-												<i class="icon ion-ios-play"></i>
-											</a>
-										</div>
-										<div class="card__content">
-											<h3 class="card__title"><a href="#"> <i class="fas fa-crown" style="color:gold;"></i>&nbsp;အဖိုးတန်တဲ့လူအဖိုးတန်တဲ့ဘ၀</a></h3>
-											<span class="card__category">
-												<a href="#">ညီညီနိုင်</a>
-												
-											</span>
-											<span class="card__rate"><i class="icon ion-ios-star"></i>7.9</span>
-										</div>
-									</div>
-									<!-- end card -->
-								</div>
-							</div>
+							@endforeach
 						</div>
+					</div>	
+
 					</div>
 				</div>
 			</section>
@@ -123,10 +78,6 @@
 									<i class="fas fa-clock" aria-hidden="true" style="margin-right: 10px;  color: #1aafff;"></i>
 										It's Book O'clock
 								</h2>
-
-
-
-								<!-- end content title -->
 
 								<!-- content tabs nav -->
 								<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
@@ -159,13 +110,17 @@
 					<div class="tab-pane fade show active" id="tab-all" role="tabpanel">
 						<div class="row">
 							@foreach ($books as $book)
-								<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+								<div class="col-6 col-sm-4 col-lg-4 col-xl-3">
 									<div class="card">
 										<div class="card__cover">
 											<img src="{{ $book->book_cover }}" alt="">
 										</div>
 										<div class="card__content">
-											<h3 class="card__title"><a href="#">{{ $book->name }}</a></h3>
+											<h3 class="card__title">												<a href="{{ route('books.show', $book->id) }}">	@if ($book->booktype == "premium")
+														<i class="fas fa-crown" style="color:gold;"></i>
+													@endif
+													&nbsp;{{ $book->title }}
+												</a></h3>
 											<span class="card__category">
 												<a href="#">{{ $book->author }}</a>
 											</span>
@@ -173,7 +128,7 @@
 										</div>
 										<div class="upcoming-description">
 									<p>
-										{{ Str::limit($book->description, 100, '...') }}
+										{{ Str::limit($book->description, 40, '...') }}
 									</p>
 									<a href="{{ route('books.show', $book->id) }}" class="upcoming-read-more">Read More</a>
 										</div>
@@ -194,7 +149,11 @@
 												<img src="{{ $book->book_cover }}" alt="">
 											</div>
 											<div class="card__content">
-												<h3 class="card__title"><a href="#">{{ $book->title }}</a></h3>
+												<h3 class="card__title">												<a href="{{ route('books.show', $book->id) }}">	@if ($book->booktype == "premium")
+														<i class="fas fa-crown" style="color:gold;"></i>
+													@endif
+													&nbsp;{{ $book->title }}
+												</a></h3>
 												<span class="card__category">
 													<a href="#">{{ $book->author }}</a>
 												</span>

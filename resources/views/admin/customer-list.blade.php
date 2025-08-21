@@ -56,9 +56,9 @@
                         <div class="row align-items-center">
                             <div class="col-1">{{ $loop->iteration }}</div>
                             <div class="col-2">
-                                <img src="{{ $user->profile_photo_url ?? 'https://via.placeholder.com/40' }}"
-                                    alt="Profile"
-                                    class="rounded img-fluid">
+                                <img src="{{ asset('storage/' . $user->avatar) ?? asset('img/default-avatar.png') }}"
+                                alt="Profile"
+                                style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:5px;">
                             </div>
                             <div class="col">{{ $user->name }}</div>
                             <div class="col">{{ $user->email }}</div>
@@ -67,7 +67,7 @@
                             <div class="col">
                             <span class="badge {{ $user->is_premium ? 'bg-success' : 'bg-warning text-dark' }}">
                                     {{ $user->is_premium ? 'Approved' : 'Pending' }}
-                                </span>
+                            </span>
                             </div>
                            
                         </div>

@@ -42,12 +42,10 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <!-- Card Body -->
                                     <div class="card-body text-center">
-                                        <img src="{{ $premium->e_receipt ?? 'https://via.placeholder.com/200x300' }}" 
+                                        <img src="{{ asset('storage/' . $premium->e_receipt) }}" alt="Receipt"
                                             class="img-fluid img-thumbnail" 
-                                            alt="Responsive image" 
                                             style="width:200px; height:300px; object-fit:cover;">
                                     </div>
 

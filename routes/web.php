@@ -3,6 +3,7 @@
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -17,41 +18,34 @@ use Laravel\Socialite\Two\AbstractProvider;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UploadFileController;
 
 
 
-if (!function_exists('adminRoute')) {
-    /**
-     * Wrap routes for admin-only access
-     *
-     * @param callable $callback
-     * @return \Closure
-     */
-    function adminRoute(callable $callback) {
-        return function (...$params) use ($callback) {
-            if (!Auth::check()) {
-                return redirect('/login')->with('error', 'Please log in first.');
-            }
+    if (!function_exists('adminRoute')) {
+        /**
+         * Wrap routes for admin-only access
+         *
+         * @param callable $callback
+         * @return \Closure
+         */
+            function adminRoute(callable $callback) {
+                    return function (...$params) use ($callback) {
+                        if (!Auth::check()) {
+                            return redirect('/login')->with('error', 'Please log in first.');
+                        }
 
-            if (Auth::user()->usertype !== 'admin') {
-                return redirect('/user/profile')->with('error', 'Access denied.');
-            }
+                        if (Auth::user()->usertype !== 'admin') {
+                            return redirect('/user/profile')->with('error', 'Access denied.');
+                        }
 
-            return $callback(...$params);
-        };
+                        return $callback(...$params);
+                    };
+                }
     }
-}
 
-
-Route::get('/', function () {
-    $books = Book::all();
-    $categories = Category::all();
-    return view('welcome',[
-        'books'=> $books,
-        'categories'=> $categories
-    ]); 
-})->name('home');
+Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/user/profile', function () {
     return view('user.profile');
 })->name('profile');
@@ -153,3 +147,19 @@ Route::get('/profile', [ProfileController::class, 'show'])
     ->name('profile.show');
 
 Route::post('/books/{book}/save', [BookController::class, 'saveBook'])->middleware('auth')->name('books.save');
+
+Route::get('/permium-books', function(){
+    $books = Book::all();
+    $categories = Category::all();
+    return view('user.premium-books',[
+        'books'=> $books,
+        'categories' => $categories,
+    ]);
+})->name('premium-books');
+
+
+Route::get('/upgrade-plan', function(){
+    return view('upgrade-plan');
+})->name('upgrade-plan');
+
+Route::post('premiumRequest', [PremiumController::class,'premiumRequest'])->name('premiumRequest');

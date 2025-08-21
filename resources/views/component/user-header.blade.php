@@ -16,10 +16,10 @@
                                 <a href="{{ url('/') }}" class="header__nav-link header__nav-link--active">Home</a>
                             </li>
                             <li class="header__nav-item">
-                                <a href="{{ route('premium') }}" class="header__nav-link">Premium</a>
+                                <a href="{{ route('premium-books') }}" class="header__nav-link">Premium</a>
                             </li>
                             <li class="header__nav-item">
-                                <a href="" class="header__nav-link">Review</a>
+                                <a href="{{ route('profile') }}">Profile</a>
                             </li>
                             <!-- dropdown -->
                             <li class="dropdown header__nav-item">
