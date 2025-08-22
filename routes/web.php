@@ -84,7 +84,7 @@ Route::get('/admin/customer-list', adminRoute(function () {
 
 Route::post('/createBook', [BookController::class,'createBook'])->middleware('auth');
 
-Route::put('/book-editor/{book}',[BookController::class,'UpdateBook'])->middleware('auth');
+Route::put('/book-editor/{id}', [BookController::class, 'update'])->name('book.update');
 
 Route::delete('/book-delete/{book}', adminRoute(function ($book) {
     // Convert the URL parameter to a Book model instance
@@ -137,7 +137,7 @@ Route::get('/detail',function(){
 
 
 // Book detail page
-Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
+Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show')->middleware('auth');
 
 // Store review
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');

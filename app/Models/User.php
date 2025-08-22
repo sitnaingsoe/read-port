@@ -57,5 +57,11 @@ class User extends Authenticatable
         {
             return $this->belongsToMany(Book::class, 'saved_books')
                         ->withTimestamps();
-}
+        }
+        public function getAvatarUrlAttribute()
+        {
+            return $this->avatar 
+                ? asset($this->avatar) 
+                : asset('img/default-avatar.png');
+        }
 }

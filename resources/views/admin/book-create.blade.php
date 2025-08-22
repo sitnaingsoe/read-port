@@ -75,7 +75,7 @@
                                     <select class="c-select form-control boxed" name="booktype">
                                         <option selected>Select Type</option>
                                        
-                                             <option value="premiun">Preminum</option>
+                                             <option value="premium">Preminum</option>
                                             <option value="free">Free</option>
                                        
                                        

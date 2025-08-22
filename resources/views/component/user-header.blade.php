@@ -57,7 +57,7 @@
                                 <!-- Logged in -->
                                 <div class="header__profile dropdown">
                                     <a class="dropdown-toggle header__sign-in" href="#" role="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <img src="{{ Auth::user()->avatar ?? asset('img/default-avatar.png') }}"
+                                        <img src="{{ Auth::user()->avatar }}"
                                              alt="Avatar"
                                              style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:5px;">
                                         <span>{{ Auth::user()->name }}</span>

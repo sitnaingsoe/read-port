@@ -93,6 +93,7 @@
         <div class="meta">by {{ $book->author ?? 'Unknown Author' }} · {{ $book->pages ?? 'N/A' }} pages</div>
         <div class="rating-summary" aria-live="polite">
           <div class="stars" id="avg-stars" aria-label="Average rating"></div>
+          
           <div id="avg-score" class="badge">{{ number_format($averageRating,1) }} / 5</div>
           <div id="rating-count" class="badge">{{ $book->reviews->count() }} review{{ $book->reviews->count() === 1 ? '' : 's' }}</div>
         </div>

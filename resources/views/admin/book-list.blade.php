@@ -44,7 +44,7 @@
                                 </div>
 
                                 <div class="item-col item-col-header item-col-sales">
-                                    <div><span>Price</span></div>
+                                    <div><span>Type</span></div>
                                 </div>
 
                                 <div class="item-col item-col-header item-col-category">
@@ -56,7 +56,7 @@
                                 </div>
 
                                 <div class="item-col item-col-header item-col-date">
-                                    <div><span>Published</span></div>
+                                    <div><span>PDF file</span></div>
                                 </div>
 
                                 <div class="item-col item-col-header fixed" style="width:80px;">
@@ -77,7 +77,7 @@
                                 <!-- Cover -->
                                 <div class="item-col fixed item-col-img md">
                                     <a href="/book-editor/{{ $book->id }}">
-                                        <div class="item-img rounded" style="background-image: url({{ $book['book_cover'] ?? 'https://via.placeholder.com/50' }})"></div>
+                                        <div class="item-img rounded" style="background-image:url('{{ $book['book_cover'] ? asset('storage/' . $book['book_cover']) : 'https://via.placeholder.com/50' }}')"></div>
                                     </a>
                                 </div>
 
@@ -93,8 +93,8 @@
 
                                 <!-- Price -->
                                 <div class="item-col item-col-sales">
-                                    <div class="item-heading">Price</div>
-                                    <div>{{ $book['price'] }}</div>
+                                    <div class="item-heading">Type</div>
+                                    <div>{{ $book['bookType'] }}</div>
                                 </div>
 
                                 <!-- Category -->
@@ -115,8 +115,12 @@
 
                                 <!-- Published -->
                                 <div class="item-col item-col-date">
-                                    <div class="item-heading">Published</div>
-                                    <div class="no-overflow">{{ $book['created_at'] }}</div>
+                                    <div class="item-heading">PDF file</div>
+                                    <div class="no-overflow">@if(!empty($book['file']))
+                                  <a href="{{ asset('storage/' . $book['file']) }}" target="_blank">See more..</a>
+                                    @else
+                                        <span>No PDF uploaded</span>
+                                    @endif</div>
                                 </div>
 
                                 <!-- Actions -->

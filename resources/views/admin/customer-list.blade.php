@@ -56,9 +56,9 @@
                         <div class="row align-items-center">
                             <div class="col-1">{{ $loop->iteration }}</div>
                             <div class="col-2">
-                                <img src="{{ asset('storage/' . $user->avatar) ?? asset('img/default-avatar.png') }}"
-                                alt="Profile"
-                                style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:5px;">
+                              <img src="{{ $user->avatar}}"
+                            alt="Profile"
+                            style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:5px;">
                             </div>
                             <div class="col">{{ $user->name }}</div>
                             <div class="col">{{ $user->email }}</div>

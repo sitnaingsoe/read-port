@@ -76,12 +76,14 @@ public function approve(User $user, Premium $premium)
         'email'    => ['required', 'email', 'unique:users,email'],
         'password' => ['required', 'min:6'],
     ]);
+        $incomingField['avatar'] = 'https://sgp1.digitaloceanspaces.com/msquarefdc/uploads/images/1755852490-default-avatar.png';
 
     // Create the user
     $user = User::create([
         'name'     => $incomingField['name'],
         'email'    => $incomingField['email'],
-        'password' => Hash::make($incomingField['password']), // hash password
+        'password' => Hash::make($incomingField['password']),
+        'avatar'=>$incomingField['avatar'],// hash password
     ]);
 
     // Create token
