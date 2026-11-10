@@ -1,0 +1,10 @@
+node_modules
+vendor
+.git
+.env
+public/storage
+storage/logs/*
+book_shop
+book_store
+laravel
+test13
