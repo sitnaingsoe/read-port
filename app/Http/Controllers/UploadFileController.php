@@ -29,19 +29,16 @@ class UploadFileController extends Controller
         ]);
 
         if ($request->hasFile('file')) {
-            $filename = time() . '-' . $request->file('file')->getClientOriginalName();
-            $path = 'uploads/images/' . $filename;
-            $useSpaces = filled(env('AWS_ACCESS_KEY_ID')) && filled(env('AWS_BUCKET'));
+            $uploadedFile = $request->file('file');
+            $filename = time() . '-' . preg_replace('/\s+/', '-', $uploadedFile->getClientOriginalName());
+            $useR2 = filled(config('filesystems.disks.r2.key')) && filled(config('filesystems.disks.r2.bucket')) && filled(config('filesystems.disks.r2.endpoint'));
 
-            if ($useSpaces) {
-                Storage::disk('spaces')->put(
-                    $path,
-                    fopen($request->file('file')->getRealPath(), 'r'),
-                    'public'
-                );
-                $url = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
+            if ($useR2) {
+                $path = $uploadedFile->storeAs('uploads/images', $filename, 'r2');
+                $baseUrl = config('filesystems.disks.r2.url') ?: (rtrim(config('filesystems.disks.r2.endpoint'), '/') . '/' . config('filesystems.disks.r2.bucket'));
+                $url = rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
             } else {
-                Storage::disk('public')->putFileAs('uploads/images', $request->file('file'), $filename);
+                $path = $uploadedFile->storeAs('uploads/images', $filename, 'public');
                 $url = asset('storage/' . $path);
             }
 

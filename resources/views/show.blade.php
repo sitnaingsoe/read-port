@@ -85,9 +85,9 @@
     transition: all 0.2s ease;
   }
   .rp-action-btn.primary {
-    background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+    background: linear-gradient(90deg, #1aafff 0%, #1f41da 100%);
     border: 0;
-    box-shadow: 0 6px 16px rgba(255, 85, 165, 0.3);
+    box-shadow: 0 6px 16px rgba(26, 175, 255, 0.3);
   }
   .rp-reader-panel {
     display: none;
@@ -140,7 +140,7 @@
             @if($book->category)
               <span class="book-badge">{{ $book->category->categoryName }}</span>
             @endif
-            <span class="book-badge">{{ number_format($book->price) }} MMK</span>
+            <span class="book-badge">{{ number_format((float) preg_replace('/[^0-9.]/', '', (string) $book->price)) }} MMK</span>
           </div>
 
           <h1 id="book-title" class="book-title">{{ $book->name }}</h1>

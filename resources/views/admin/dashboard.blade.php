@@ -165,7 +165,7 @@
                                                                 {{ ucfirst($book->booktype ?? 'free') }}
                                                             </span>
                                                         </td>
-                                                        <td>{{ number_format($book->price) }} Ks</td>
+                                                        <td>{{ number_format((float) preg_replace('/[^0-9.]/', '', (string) $book->price)) }} Ks</td>
                                                         <td>
                                                             <a href="/book-editor/{{ $book->id }}" class="btn btn-sm btn-primary">Edit</a>
                                                         </td>

@@ -40,12 +40,16 @@ class ProfileController extends Controller
         $user->name = strip_tags($validated['name']);
 
         if ($request->hasFile('avatar')) {
-            $useSpaces = filled(env('AWS_ACCESS_KEY_ID')) && filled(env('AWS_BUCKET'));
-            if ($useSpaces) {
-                $path = $request->file('avatar')->storePublicly('uploads/avatars', 'spaces');
-                $user->avatar = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
+            $uploadedFile = $request->file('avatar');
+            $filename = time() . '-' . preg_replace('/\s+/', '-', $uploadedFile->getClientOriginalName());
+            $useR2 = filled(config('filesystems.disks.r2.key')) && filled(config('filesystems.disks.r2.bucket')) && filled(config('filesystems.disks.r2.endpoint'));
+
+            if ($useR2) {
+                $path = $uploadedFile->storeAs('uploads/avatars', $filename, 'r2');
+                $baseUrl = config('filesystems.disks.r2.url') ?: (rtrim(config('filesystems.disks.r2.endpoint'), '/') . '/' . config('filesystems.disks.r2.bucket'));
+                $user->avatar = rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
             } else {
-                $path = $request->file('avatar')->store('uploads/avatars', 'public');
+                $path = $uploadedFile->storeAs('uploads/avatars', $filename, 'public');
                 $user->avatar = asset('storage/' . $path);
             }
         }

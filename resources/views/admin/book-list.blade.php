@@ -113,7 +113,7 @@
                                                     {{ $isPrem ? '👑 Premium' : 'Free' }}
                                                 </span>
                                             </td>
-                                            <td><strong>{{ number_format($book->price) }} Ks</strong></td>
+                                            <td><strong>{{ number_format((float) preg_replace('/[^0-9.]/', '', (string) $book->price)) }} Ks</strong></td>
                                             <td><small>{{ $book->created_at?->format('M d, Y') }}</small></td>
                                             <td style="text-align:right;">
                                                 <div style="display:inline-flex; gap:6px;">

@@ -5,8 +5,8 @@
   .rp-profile-wrap {
     min-height: calc(100vh - 160px);
     padding: 110px 0 60px;
-    background: radial-gradient(1200px 600px at 10% -10%, rgba(255, 85, 165, 0.12), transparent 50%),
-                radial-gradient(1000px 800px at 90% 10%, rgba(26, 175, 255, 0.10), transparent 50%),
+    background: radial-gradient(1200px 600px at 10% -10%, rgba(26, 175, 255, 0.14), transparent 50%),
+                radial-gradient(1000px 800px at 90% 10%, rgba(31, 65, 218, 0.12), transparent 50%),
                 #2b2b31;
     color: #fff;
     font-family: 'Open Sans', sans-serif;
@@ -21,7 +21,7 @@
   }
   .rp-hero-banner {
     height: 130px;
-    background: linear-gradient(90deg, #ff55a5 0%, #ff5860 50%, #1aafff 100%);
+    background: linear-gradient(90deg, #1aafff 0%, #1f41da 100%);
     position: relative;
   }
   .rp-hero-body {
@@ -44,7 +44,7 @@
     height: 108px;
     border-radius: 50%;
     border: 4px solid #28282d;
-    background: linear-gradient(135deg, #ff55a5, #ff5860);
+    background: linear-gradient(135deg, #1aafff, #1f41da);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     overflow: hidden;
     display: flex;
@@ -122,9 +122,9 @@
     transition: all 0.2s ease;
   }
   .rp-btn-gradient {
-    background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+    background: linear-gradient(90deg, #1aafff 0%, #1f41da 100%);
     color: #fff !important;
-    box-shadow: 0 6px 16px rgba(255, 85, 165, 0.3);
+    box-shadow: 0 6px 16px rgba(26, 175, 255, 0.3);
   }
   .rp-btn-gradient:hover {
     opacity: 0.92;

@@ -89,7 +89,7 @@
     transition: all 0.2s ease;
   }
   .rp-read-btn:hover {
-    background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+    background: linear-gradient(90deg, #1aafff 0%, #1f41da 100%);
     border-color: transparent;
   }
   .header__logo img {
@@ -135,7 +135,7 @@
                     <span class="rp-type-pill {{ $isPrem ? 'premium' : 'free' }}">
                       @if($isPrem) <i class="fas fa-crown"></i> Premium @else Free @endif
                     </span>
-                    <span class="rp-price-pill">{{ number_format($book->price) }} Ks</span>
+                    <span class="rp-price-pill">{{ number_format((float) preg_replace('/[^0-9.]/', '', (string) $book->price)) }} Ks</span>
                     <img
                       src="{{ $book->book_cover }}"
                       alt="{{ $book->name }}"
@@ -172,7 +172,7 @@
         <div class="row">
           <div class="col-12">
             <h2 class="content__title">
-              <i class="fas fa-book-reader" aria-hidden="true" style="margin-right: 10px; color: #ff55a5;"></i>
+              <i class="fas fa-book-reader" aria-hidden="true" style="margin-right: 10px; color: #1aafff;"></i>
               Explore Our Library
             </h2>
 

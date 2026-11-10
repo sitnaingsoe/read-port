@@ -61,15 +61,36 @@ return [
             // 'timeout' => 30,
         ],
 
-        // DigitalOcean Spaces (S3 compatible)
+        // Cloudflare R2 (S3 compatible)
+        'r2' => [
+            'driver' => 's3',
+            'key' => env('R2_ACCESS_KEY_ID', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('R2_SECRET_ACCESS_KEY', env('AWS_SECRET_ACCESS_KEY')),
+            'region' => env('AWS_DEFAULT_REGION', 'auto'),
+            'bucket' => env('R2_BUCKET', env('AWS_BUCKET')),
+            'url' => env('R2_PUBLIC_URL', env('AWS_URL')),
+            'endpoint' => env('AWS_ENDPOINT') ?: (env('R2_ACCOUNT_ID') ? 'https://' . env('R2_ACCOUNT_ID') . '.r2.cloudflarestorage.com' : null),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => true,
+            'http' => [
+                'verify' => env('APP_ENV') !== 'local',
+            ],
+        ],
+
+        // Keep 'spaces' alias pointing to R2/S3 config for backward compatibility
         'spaces' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION', 'sgp1'),
-            'bucket' => env('AWS_BUCKET'),
-            'endpoint' => env('AWS_ENDPOINT', 'https://sgp1.digitaloceanspaces.com'),
+            'key' => env('R2_ACCESS_KEY_ID', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('R2_SECRET_ACCESS_KEY', env('AWS_SECRET_ACCESS_KEY')),
+            'region' => env('AWS_DEFAULT_REGION', 'auto'),
+            'bucket' => env('R2_BUCKET', env('AWS_BUCKET')),
+            'url' => env('R2_PUBLIC_URL', env('AWS_URL')),
+            'endpoint' => env('AWS_ENDPOINT') ?: (env('R2_ACCOUNT_ID') ? 'https://' . env('R2_ACCOUNT_ID') . '.r2.cloudflarestorage.com' : null),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => true,
+            'http' => [
+                'verify' => env('APP_ENV') !== 'local',
+            ],
         ],
 
     ],

@@ -12,21 +12,21 @@
       justify-content: center;
       background: #2b2b31;
       color: #fff;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: 'Open Sans', system-ui, sans-serif;
     }
     .box {
       background: #28282d;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
+      border-top: 2px solid #1aafff;
+      border-radius: 6px;
       padding: 36px 40px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 5px 25px 0 rgba(0, 0, 0, 0.3);
     }
     .spinner {
       width: 40px;
       height: 40px;
-      border: 3px solid rgba(255, 85, 165, 0.25);
-      border-top-color: #ff55a5;
+      border: 3px solid rgba(26, 175, 255, 0.25);
+      border-top-color: #1aafff;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin: 0 auto 18px;

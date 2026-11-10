@@ -71,22 +71,22 @@
     transition: border-color 0.2s ease, background 0.2s ease;
   }
   .rp-dropzone:hover {
-    border-color: #ff55a5;
-    background: rgba(255, 85, 165, 0.04);
+    border-color: #1aafff;
+    background: rgba(26, 175, 255, 0.04);
   }
   .rp-submit-btn {
     width: 100%;
     padding: 14px 20px;
     border-radius: 10px;
     border: none;
-    background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+    background: linear-gradient(90deg, #1aafff 0%, #1f41da 100%);
     color: #fff;
     font-weight: 700;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(255, 85, 165, 0.3);
+    box-shadow: 0 8px 20px rgba(26, 175, 255, 0.3);
     transition: opacity 0.2s ease;
   }
   .rp-submit-btn:hover {
