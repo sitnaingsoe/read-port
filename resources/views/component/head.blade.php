@@ -2,10 +2,12 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>ModularAdmin - Free Dashboard Theme | HTML Version</title>
-    <meta name="description" content="">
+    <title>ReadPort Admin Panel</title>
+    <meta name="description" content="ReadPort Bookstore Admin Dashboard">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Place favicon.ico in the root directory -->
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <!-- CSS files in public folder -->
     <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">

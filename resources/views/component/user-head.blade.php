@@ -27,9 +27,9 @@
 				<link rel="apple-touch-icon" sizes="144x144" href="{{ asset('icon/apple-touch-icon-144x144.png') }}">
 
 
-				<meta name="description" content="">
-				<meta name="keywords" content="">
-				<meta name="author" content="Dmitry Volkov">
-				<title>FlixGo – Online Movies, TV Shows & Cinema HTML Template</title>
+				<meta name="description" content="ReadPort Online Bookstore and E-Book Platform">
+				<meta name="keywords" content="books, ebooks, myanmar books, readport">
+				<meta name="author" content="ReadPort">
+				<title>ReadPort – Online Bookstore & Digital Library</title>
 
 	</head>

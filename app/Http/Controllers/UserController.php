@@ -25,6 +25,37 @@ public function approve(User $user, Premium $premium)
     return back()->with('success', 'User approved as premium.');
 }
 
+    public function togglePremium(User $user)
+    {
+        $user->is_premium = !$user->is_premium;
+        $user->save();
+
+        if ($user->is_premium) {
+            Premium::where('user_id', $user->id)->update(['is_disabled' => true]);
+            Alert::success("Success", "{$user->name} upgraded to Premium.");
+        } else {
+            Alert::info("Updated", "{$user->name} changed to Standard user.");
+        }
+
+        return back();
+    }
+
+    public function destroy(User $user)
+    {
+        if ($user->usertype === 'admin') {
+            Alert::error("Error", "Cannot delete an admin account.");
+            return back();
+        }
+
+        Premium::where('user_id', $user->id)->delete();
+        $user->reviews()->delete();
+        $user->savedBooks()->detach();
+        $user->delete();
+
+        Alert::success("Deleted", "Customer deleted successfully.");
+        return back();
+    }
+
     public function logout(){
         Auth::logout();
         return redirect("/");
@@ -83,6 +114,8 @@ public function approve(User $user, Premium $premium)
         'email'    => $incomingField['email'],
         'password' => Hash::make($incomingField['password']), // hash password
     ]);
+
+    Auth::login($user);
 
     // Create token
     $token = $user->createToken('google-login')->plainTextToken;

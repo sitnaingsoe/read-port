@@ -22,9 +22,21 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'usertype',
+        'is_premium',
         'google_id',
         'avatar',
     ];
+
+    public function savedBooks()
+    {
+        return $this->belongsToMany(Book::class, 'saved_books')->withTimestamps();
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

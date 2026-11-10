@@ -15,5 +15,5 @@
             ga('create', 'UA-80463319-4', 'auto');
             ga('send', 'pageview');
         </script>
-        <script src="js/vendor.js"></script>
-        <script src="js/app.js"></script>
+        <script src="{{ asset('js/vendor.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>

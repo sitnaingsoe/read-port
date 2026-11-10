@@ -28,24 +28,62 @@ class BookController extends Controller
         ]);
     }
     public function UpdateBook(Book $book, Request $request){
-        //if(Auth::user()->id != $book->user_id){
-        //    return redirect("/");
-        //}
-                    $incomingFiled = $request->validate([
-                    'name'=>'required',
-                    'price'=> 'required',
-                    'author'=> 'required',
-                    'description'=> 'required',
-                    'category'=> 'required',
-                        ]);
+        $incomingFiled = $request->validate([
+            'name' => 'required',
+            'price' => 'required',
+            'author' => 'required',
+            'description' => 'required',
+            'category_id' => 'required',
+            'booktype' => 'required',
+            'book_cover' => 'nullable|file|max:10240',
+            'file' => 'nullable|file|max:20480',
+        ]);
 
-                    $incomingFiled['name'] = strip_tags($incomingFiled['name']);
-                    $incomingFiled['price'] = strip_tags($incomingFiled['price']);
-                    $incomingFiled['description'] = strip_tags($incomingFiled['description']);
-                    $incomingFiled['category'] = strip_tags($incomingFiled['category']);
-                    $book->update($incomingFiled);
-                    Alert::success('congrate','Successfully updated');
-                    return redirect('/book-list');
+        $incomingFiled['name'] = strip_tags($incomingFiled['name']);
+        $incomingFiled['price'] = strip_tags($incomingFiled['price']);
+        $incomingFiled['author'] = strip_tags($incomingFiled['author']);
+        $incomingFiled['description'] = strip_tags($incomingFiled['description']);
+        $incomingFiled['category_id'] = strip_tags($incomingFiled['category_id']);
+        $incomingFiled['booktype'] = strip_tags($incomingFiled['booktype']);
+
+        $useSpaces = filled(env('AWS_ACCESS_KEY_ID')) && filled(env('AWS_BUCKET'));
+
+        if ($request->hasFile('book_cover')) {
+            if ($useSpaces) {
+                $path = $request->file('book_cover')->storePublicly('uploads', 'spaces');
+                $url = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
+            } else {
+                $path = $request->file('book_cover')->store('uploads', 'public');
+                $url = asset('storage/' . $path);
+            }
+            $incomingFiled['book_cover'] = $url;
+        } else {
+            unset($incomingFiled['book_cover']);
+        }
+
+        if ($request->hasFile('file')) {
+            $filename = time() . '-' . $request->file('file')->getClientOriginalName();
+            $path = 'uploads/' . $filename;
+
+            if ($useSpaces) {
+                Storage::disk('spaces')->put(
+                    $path,
+                    fopen($request->file('file')->getRealPath(), 'r'),
+                    'public'
+                );
+                $url = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
+            } else {
+                Storage::disk('public')->putFileAs('uploads', $request->file('file'), $filename);
+                $url = asset('storage/' . $path);
+            }
+            $incomingFiled['file'] = $url;
+        } else {
+            unset($incomingFiled['file']);
+        }
+
+        $book->update($incomingFiled);
+        Alert::success('congrate', 'Successfully updated');
+        return redirect('/book-list');
     }
     public function createBook (Request $request){
 
@@ -54,34 +92,40 @@ class BookController extends Controller
             "price" => "required",
             "author" => "required",
             "description" => "required",
-            'book_cover' =>'required|file|max:2048',           
-            'file' => 'required|file|max:2048',
+            'book_cover' =>'required|file|max:10240',           
+            'file' => 'required|file|max:20480',
             'category_id' => 'required',
             'booktype'=>'required'
         ]);     
-            if ($request->hasFile('book_cover')) {
-            // Store the file
-            $path = $request->file('book_cover')->storePublicly('uploads', 'spaces');
+        $useSpaces = filled(env('AWS_ACCESS_KEY_ID')) && filled(env('AWS_BUCKET'));
 
-            // Generate the URL
-            $url = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
-
-            // Add the file URL into the array
-            $incomingBook['book_cover'] = $url;
+        if ($request->hasFile('book_cover')) {
+            if ($useSpaces) {
+                $path = $request->file('book_cover')->storePublicly('uploads', 'spaces');
+                $url = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
+            } else {
+                $path = $request->file('book_cover')->store('uploads', 'public');
+                $url = asset('storage/' . $path);
             }
-             if ($request->hasFile('file')) {
+            $incomingBook['book_cover'] = $url;
+        }
+        if ($request->hasFile('file')) {
             $filename = time() . '-' . $request->file('file')->getClientOriginalName();
             $path = 'uploads/' . $filename;
 
-            Storage::disk('spaces')->put(
-                $path,
-                fopen($request->file('file')->getRealPath(), 'r'),
-                'public'
-            );
+            if ($useSpaces) {
+                Storage::disk('spaces')->put(
+                    $path,
+                    fopen($request->file('file')->getRealPath(), 'r'),
+                    'public'
+                );
+                $url = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
+            } else {
+                Storage::disk('public')->putFileAs('uploads', $request->file('file'), $filename);
+                $url = asset('storage/' . $path);
+            }
 
-            $url = rtrim(env('AWS_ENDPOINT'), '/') . '/' . env('AWS_BUCKET') . '/' . ltrim($path, '/');
-
-             $incomingBook['file'] = $url;
+            $incomingBook['file'] = $url;
         }
             
          Book::create($incomingBook);
@@ -96,6 +140,21 @@ class BookController extends Controller
             return redirect('/book-list') ;
          }
 
+    public function toggleSave(Book $book)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $toggled = $user->savedBooks()->toggle($book->id);
+
+        if (!empty($toggled['attached'])) {
+            Alert::success('Saved', 'Book saved to your profile!');
+        } else {
+            Alert::info('Removed', 'Book removed from your saved list.');
+        }
+
+        return back();
+    }
+
          public function create()
     {
         $categories = Category::all();
@@ -104,7 +163,14 @@ class BookController extends Controller
 
     public function index()
     {
-        $books = Book::with('category')->get();
+        $query = Book::with('category');
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('author', 'like', "%{$search}%");
+            });
+        }
+        $books = $query->latest()->get();
         return view('admin.book-list', compact('books'));
     }
 }

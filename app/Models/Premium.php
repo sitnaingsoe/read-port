@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Premium extends Model
 {
-    protected $fillable = [ 'name','email','e-receipt','user_id','is_disabled'];
+    protected $fillable = ['name', 'email', 'e_receipt', 'user_id', 'is_disabled'];
 
       public function user()
     {

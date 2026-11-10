@@ -16,6 +16,7 @@ use Laravel\Socialite\Two\AbstractProvider;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UploadFileController;
 
 
@@ -44,16 +45,22 @@ if (!function_exists('adminRoute')) {
 
 
 Route::get('/', function () {
-    $books = Book::all();
+    $query = Book::with('reviews', 'category');
+    if ($search = request('search')) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('author', 'like', "%{$search}%");
+        });
+    }
+    $books = $query->latest()->get();
     $categories = Category::all();
-    return view('welcome',[
-        'books'=> $books,
-        'categories'=> $categories
-    ]); 
+    return view('welcome', [
+        'books' => $books,
+        'categories' => $categories,
+    ]);
 })->name('home');
-Route::get('/user/profile', function () {
-    return view('user.profile');
-})->name('profile');
+Route::get('/user/profile', [ProfileController::class, 'show'])->name('profile');
+Route::post('/user/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
 
 Route::get('/admin/dashboard', adminRoute(function () {
     return (new DashboardController())->ViewDashboard();
@@ -79,10 +86,23 @@ Route::get('/book-editor/{book}', adminRoute(function ($book) {
 }));
 
 Route::get('/admin/customer-list', adminRoute(function () {
-    // Only get users where usertype is 'customer'
-    $users = User::where('usertype', 'user')
-                 ->orderBy('created_at', 'desc')
-                 ->paginate(10);
+    $query = User::where('usertype', 'user')
+                 ->withCount(['reviews', 'savedBooks']);
+
+    if ($search = request('search')) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
+    }
+
+    if (request('status') === 'premium') {
+        $query->where('is_premium', true);
+    } elseif (request('status') === 'standard') {
+        $query->where('is_premium', false);
+    }
+
+    $users = $query->orderBy('created_at', 'desc')->paginate(10);
 
     return view('admin.customer-list', compact('users'));
 }))->name('customer-list');
@@ -105,7 +125,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
 
 Route::get('/login', [UserController::class, 'loginView'])->name('login');
 Route::get('/signup', [UserController::class, 'signupView'])->name('signup');
-Route::post('/logout',[UserController::class,'logout']);
+Route::match(['get', 'post'], '/logout', [UserController::class, 'logout'])->name('logout');
 Route::post('/login',[UserController::class,'login']);  
 Route::post('/signup', [UserController::class,'signup']); 
 
@@ -125,6 +145,10 @@ Route::delete('/category-delete/{category}', adminRoute(function ($category) {
 }));
 
 Route::patch('/users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
+Route::patch('/premium/{premium}/reject', [PremiumController::class, 'reject'])->name('premium.reject')->middleware('auth');
+Route::patch('/users/{user}/toggle-premium', [UserController::class, 'togglePremium'])->name('users.toggle-premium')->middleware('auth');
+Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('auth');
+Route::post('/books/{book}/save', [BookController::class, 'toggleSave'])->name('books.save')->middleware('auth');
 
 Route::get('/admin/premium', adminRoute(function () {
     return (new PremiumController())->index();
@@ -133,8 +157,8 @@ Route::get('/admin/premium', adminRoute(function () {
 Route::post('google/logout', [GoogleAuthController::class,'logout']);
 
 
-Route::get('/upload', [UploadFileController::class, 'showUploadForm'])->name('upload.form');
-Route::post('/upload', [UploadFileController::class, 'uploadFile'])->name('upload.file');
+Route::get('/upload', [UploadFileController::class, 'showUploadForm'])->name('upload.form')->middleware('auth');
+Route::post('/upload', [UploadFileController::class, 'uploadFile'])->name('upload.file')->middleware('auth');
 
 Route::get('/detail',function(){
     return view('detail');

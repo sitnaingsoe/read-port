@@ -89,10 +89,30 @@
           <div id="book-avg-score" class="book-badge">{{ number_format($averageRating,1) }} / 5</div>
           <div id="book-rating-count" class="book-badge">{{ $book->reviews->count() }} review{{ $book->reviews->count() === 1 ? '' : 's' }}</div>
         </div>
-        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
-          <span class="book-badge">{{ $book->booktype }}</span>
-          <span class="book-badge">Save</span>
-          <span class="book-badge"> <a href="{{ $book->file }}">Read</a></span>
+        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <span class="book-badge">{{ ucfirst($book->booktype ?? 'Free') }}</span>
+
+          @auth
+            @php
+              $isSaved = Auth::user()->savedBooks()->where('book_id', $book->id)->exists();
+              $isPremiumBook = in_array(strtolower($book->booktype ?? ''), ['premiun', 'premium']);
+              $canRead = !$isPremiumBook || Auth::user()->is_premium || Auth::user()->usertype === 'admin';
+            @endphp
+            <form action="{{ route('books.save', $book->id) }}" method="POST" style="margin:0;">
+              @csrf
+              <button type="submit" class="book-badge" style="cursor:pointer; background:{{ $isSaved ? '#10b981' : 'transparent' }}; color:{{ $isSaved ? '#fff' : 'var(--muted)' }};">
+                {{ $isSaved ? '★ Saved' : '☆ Save Book' }}
+              </button>
+            </form>
+
+            @if($canRead)
+              <a href="{{ $book->file }}" target="_blank" class="book-badge" style="text-decoration:none; background:#3b82f6; color:#fff;">📖 Read / Download</a>
+            @else
+              <a href="{{ route('upload.form') }}" class="book-badge" style="text-decoration:none; background:#f59e0b; color:#fff;">👑 Upgrade to Premium to Read</a>
+            @endif
+          @else
+            <a href="{{ route('login') }}" class="book-badge" style="text-decoration:none;">Log in to Save or Read</a>
+          @endauth
         </div>
       </div>
     </div>
