@@ -164,13 +164,29 @@ class BookController extends Controller
     public function index()
     {
         $query = Book::with('category');
+
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('author', 'like', "%{$search}%");
             });
         }
-        $books = $query->latest()->get();
-        return view('admin.book-list', compact('books'));
+
+        if ($catId = request('category_id')) {
+            $query->where('category_id', $catId);
+        }
+
+        if ($type = request('booktype')) {
+            if ($type === 'premium') {
+                $query->whereIn('booktype', ['premiun', 'premium']);
+            } elseif ($type === 'free') {
+                $query->where('booktype', 'free');
+            }
+        }
+
+        $books = $query->latest()->paginate(10);
+        $categories = Category::all();
+
+        return view('admin.book-list', compact('books', 'categories'));
     }
 }

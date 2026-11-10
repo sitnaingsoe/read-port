@@ -9,177 +9,148 @@
             <div class="app" id="app">
                 @include('component.header')
                 @include('component.sidebar')
-                                <div class="sidebar-overlay" id="sidebar-overlay"></div>
+                <div class="sidebar-overlay" id="sidebar-overlay"></div>
                 <div class="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle"></div>
                 <div class="mobile-menu-handle"></div>
                 <article class="content items-list-page">
                     <div class="title-search-block">
                         <div class="title-block">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h3 class="title"> Items
-                                        <a href="{{ route('book-create') }}" class="btn btn-primary btn-sm rounded-s"> Add New </a>
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h3 class="title">
+                                        Books Catalog ({{ $books->total() }})
+                                        <a href="{{ route('book-create') }}" class="btn btn-primary btn-sm rounded-s" style="margin-left:10px;">
+                                            <i class="fa fa-plus"></i> Add New Book
+                                        </a>
                                     </h3>
-                                   
+                                    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                                        <a href="{{ route('book-list', ['search' => request('search'), 'category_id' => request('category_id')]) }}"
+                                           class="btn btn-sm {{ !request('booktype') ? 'btn-primary' : 'btn-secondary' }}">All Types</a>
+                                        <a href="{{ route('book-list', ['booktype' => 'premium', 'search' => request('search'), 'category_id' => request('category_id')]) }}"
+                                           class="btn btn-sm {{ request('booktype') === 'premium' ? 'btn-primary' : 'btn-secondary' }}">Premium</a>
+                                        <a href="{{ route('book-list', ['booktype' => 'free', 'search' => request('search'), 'category_id' => request('category_id')]) }}"
+                                           class="btn btn-sm {{ request('booktype') === 'free' ? 'btn-primary' : 'btn-secondary' }}">Free</a>
+
+                                        @if(!empty($categories))
+                                            <form method="GET" action="{{ route('book-list') }}" style="display:inline-block; margin-left:8px;">
+                                                @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+                                                @if(request('booktype')) <input type="hidden" name="booktype" value="{{ request('booktype') }}"> @endif
+                                                <select name="category_id" onchange="this.form.submit()" class="form-control form-control-sm" style="display:inline-block; width:auto; height:32px; padding:2px 10px;">
+                                                    <option value="">All Categories</option>
+                                                    @foreach($categories as $cat)
+                                                        <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
+                                                            {{ $cat->categoryName }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
-                    </div>
-                    <div class="card items">
-                    <ul class="item-list striped">
-                        <!-- Header Row -->
-                        <li class="item item-list-header">
-                            <div class="item-row">
-                                <div class="item-col item-col-header fixed" style="width:50px;">
-                                    <div><span>No</span></div>
-                                </div>
 
-                                <div class="item-col item-col-header fixed item-col-img md">
-                                    <div><span>Cover</span></div>
-                                </div>
-
-                                <div class="item-col item-col-header item-col-title">
-                                    <div><span>Name</span></div>
-                                </div>
-
-                                <div class="item-col item-col-header item-col-sales">
-                                    <div><span>Price</span></div>
-                                </div>
-
-                                <div class="item-col item-col-header item-col-category">
-                                    <div class="no-overflow"><span>Category</span></div>
-                                </div>
-
-                                <div class="item-col item-col-header item-col-author">
-                                    <div class="no-overflow"><span>Author</span></div>
-                                </div>
-
-                                <div class="item-col item-col-header item-col-date">
-                                    <div><span>Published</span></div>
-                                </div>
-
-                                <div class="item-col item-col-header fixed" style="width:80px;">
-                                    <div><span>Actions</span></div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <!-- Item Rows -->
-                        @foreach ($books as $index => $book)
-                        <li class="item">
-                            <div class="item-row">
-                                <!-- No -->
-                                <div class="item-col fixed" style="width:50px;">
-                                    {{ $loop->iteration }}
-                                </div>
-
-                                <!-- Cover -->
-                                <div class="item-col fixed item-col-img md">
-                                    <a href="/book-editor/{{ $book->id }}">
-                                        <div class="item-img rounded" style="background-image: url({{ $book['book_cover'] ?? 'https://via.placeholder.com/50' }})"></div>
-                                    </a>
-                                </div>
-
-                                <!-- Name -->
-                                <div class="item-col fixed pull-left item-col-title">
-                                    <div class="item-heading">Name</div>
-                                    <div>
-                                        <a href="/book-editor/{{ $book->id }}">
-                                            <h4 class="item-title">{{ $book['name'] }}</h4>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Price -->
-                                <div class="item-col item-col-sales">
-                                    <div class="item-heading">Price</div>
-                                    <div>{{ $book['price'] }}</div>
-                                </div>
-
-                                <!-- Category -->
-                                <div class="item-col item-col-category no-overflow">
-                                    <div class="item-heading">Category</div>
-                                    <div class="no-overflow">
-                                        <a href="#">{{ $book->category->categoryName ?? 'No Category' }}</a>
-                                    </div>
-                                </div>
-
-                                <!-- Author -->
-                                <div class="item-col item-col-author">
-                                    <div class="item-heading">Author</div>
-                                    <div class="no-overflow">
-                                        <a href="#">{{ $book['author'] }}</a>
-                                    </div>
-                                </div>
-
-                                <!-- Published -->
-                                <div class="item-col item-col-date">
-                                    <div class="item-heading">Published</div>
-                                    <div class="no-overflow">{{ $book['created_at'] }}</div>
-                                </div>
-
-                                <!-- Actions -->
-                                <div class="item-col fixed" style="width:80px; display:flex; justify-content:center; gap:5px;">
-                                    <!-- Delete Icon -->
-                                    <form action="/book-delete/{{ $book->id }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger p-1" title="Delete">
-                                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                                            </svg>
+                        <div class="items-search">
+                            <form class="form-inline" method="GET" action="{{ route('book-list') }}">
+                                @if(request('booktype')) <input type="hidden" name="booktype" value="{{ request('booktype') }}"> @endif
+                                @if(request('category_id')) <input type="hidden" name="category_id" value="{{ request('category_id') }}"> @endif
+                                <div class="input-group">
+                                    <input type="text" name="search" value="{{ request('search') }}" class="form-control boxed rounded-s" placeholder="Search title or author...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-secondary rounded-s" type="submit">
+                                            <i class="fa fa-search"></i>
                                         </button>
-                                    </form>
-                                    <!-- Edit Icon -->
-                                    <a href="/book-editor/{{ $book->id }}" class="btn btn-sm btn-primary p-1" title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
-                                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001"/>
-                                        </svg>
-                                    </a>
+                                    </span>
                                 </div>
-                            </div>
-                        </li>
-
-                        @endforeach
-                    </ul>
+                            </form>
+                        </div>
                     </div>
 
+                    <div class="card" style="background:#fff; border-radius:8px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle" style="margin-bottom:0;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Cover</th>
+                                        <th>Title & Author</th>
+                                        <th>Category</th>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th>Published</th>
+                                        <th style="text-align:right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($books as $book)
+                                        @php
+                                            $isPrem = in_array(strtolower($book->booktype ?? ''), ['premiun', 'premium']);
+                                        @endphp
+                                        <tr>
+                                            <td>{{ ($books->currentPage() - 1) * $books->perPage() + $loop->iteration }}</td>
+                                            <td>
+                                                <a href="/book-editor/{{ $book->id }}">
+                                                    <img src="{{ $book->book_cover ?? 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=200&q=80' }}"
+                                                         alt="{{ $book->name }}"
+                                                         style="width:44px; height:62px; object-fit:cover; border-radius:5px;"
+                                                         onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=200&q=80';">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="/book-editor/{{ $book->id }}" style="font-weight:700; color:#111827; text-decoration:none;">
+                                                    {{ $book->name }}
+                                                </a>
+                                                <br>
+                                                <small class="text-muted">by {{ $book->author }}</small>
+                                            </td>
+                                            <td>
+                                                <span style="padding:3px 9px; border-radius:6px; background:#f1f5f9; color:#334155; font-size:12px; font-weight:600;">
+                                                    {{ $book->category->categoryName ?? 'Uncategorized' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span style="padding:4px 10px; border-radius:999px; font-size:11.5px; font-weight:700; background:{{ $isPrem ? '#fef3c7' : '#d1fae5' }}; color:{{ $isPrem ? '#b45309' : '#065f46' }};">
+                                                    {{ $isPrem ? '👑 Premium' : 'Free' }}
+                                                </span>
+                                            </td>
+                                            <td><strong>{{ number_format($book->price) }} Ks</strong></td>
+                                            <td><small>{{ $book->created_at?->format('M d, Y') }}</small></td>
+                                            <td style="text-align:right;">
+                                                <div style="display:inline-flex; gap:6px;">
+                                                    <a href="{{ route('books.show', $book->id) }}" target="_blank" class="btn btn-sm btn-secondary" title="View on Store">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <a href="/book-editor/{{ $book->id }}" class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fa fa-pencil"></i> Edit
+                                                    </a>
+                                                    <form action="/book-delete/{{ $book->id }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete book {{ addslashes($book->name) }}?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted" style="padding:30px;">No books found.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-
-                    <nav class="text-right">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#"> Prev </a>
-                            </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#"> 1 </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"> 2 </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"> 3 </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"> 4 </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"> 5 </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"> Next </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div style="margin-top: 16px;">
+                        {{ $books->withQueryString()->links() }}
+                    </div>
                 </article>
                 @include('component.fooder')
-                <!-- /.modal -->
             </div>
         </div>
         @include('component.script')
-        <script src="js/vendor.js"></script>
-        <script src="js/app.js"></script>
     </body>
 
 </html>
